@@ -77,6 +77,11 @@ personContainer.describe();
 //y pegar a éste to-do lo que se desee exportar. En los paréntesis finales,
 //this representa el scope global, así que la variable que se envíe estará
 //disponible globalmente
+/**
+ * Esta forma, es una variación del patrón llamada Import mixins, y es usada
+ * principalmente para utilizar objetos del scope global, por ejemplo, otras
+ * librerías.
+ */
 (function(exports) {
     var names = ["Sunday", "Monday", "Tuesday", "Wednesday",
         "Thursday", "Friday", "Saturday"];
@@ -89,4 +94,7 @@ personContainer.describe();
     };
 })(this.weekDay = {});
 
+/** Esta última sintaxis es caca, genera un error cuando se corre en consola,
+ * pero al parecer esta es la forma que utilizan en jQuery
+ */
 console.log(weekDay.name(weekDay.number("Saturday")));
