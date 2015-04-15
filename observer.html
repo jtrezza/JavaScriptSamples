@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="js/design_patterns/observer.js"></script>
+
+</head>
+<body>
+    <p>
+        <input id="mainCheckbox" type="checkbox"/> <- Subject
+    </p>
+    <button id="addNewObserver">Add New Observer checkbox</button>
+
+    <p>Observers:</p>
+    <div id="observersContainer" style="border: solid 1px black; padding: 1em; margin: 1em;"></div>
+    <script type="text/javascript">
+        /**
+         * Nos permite extender un objeto agregandole todas las propiedades de otro. Sorprendentemente,
+         * funciona incluso extendiendo objetos que son referencias a elementos del DOM.
+         * @param extension
+         * @param obj
+         */
+        function extend( extension, obj ){
+            /**
+             * El ciclo for..in itera sobre un objeto, y devuelve en cada
+             * iteración la llave, no el objeto en sí.
+             */
+            for ( var key in extension ){
+                obj[key] = extension[key];
+            }
+        }
+        /**
+         * Añadimos referencias a los elementos del DOM (El checkbox subject, el botón, y el div)
+         */
+        var controlCheckbox = document.getElementById( "mainCheckbox" ),
+                addBtn = document.getElementById( "addNewObserver" ),
+                container = document.getElementById( "observersContainer" );
+
+        // Concrete Subject
+
+        // Convertimos al checkbox principal en subject extendiendo la 'clase' Subject.
+        extend( new Subject(), controlCheckbox );
+
+        // Creamos un trigger para que el checkbox subject ejecute su método notify cuando sea clickado.
+        // El método notify recorre el array de observers y llama el método update de cada uno pasando un
+        // parámetro; en este caso, el valor .checked, que devuelve true o false dependiendo del estado
+        // de dicha propiedad del checkbox.
+        controlCheckbox.onclick = function(){
+            controlCheckbox.notify( controlCheckbox.checked );
+        };
+        /**
+         * Asociamos la función addNewObserver al evento onclick del botón. Sin paréntesis, para asociar
+         * la función y no el resultado de la misma.
+         */
+        addBtn.onclick = addNewObserver;
+
+        function addNewObserver(){
+
+            // Create a new checkbox to be added
+            var check  = document.createElement( "input" );
+            check.type = "checkbox";
+
+            // Extend the checkbox with the Observer class
+            extend( new Observer(), check );
+
+            // Override with custom update behaviour
+            check.update = function( value ){
+                this.checked = value;
+            };
+
+            // Add the new observer to our list of observers
+            // for our main subject
+            controlCheckbox.addObserver( check );
+
+            // Append the item to the container
+            container.appendChild( check );
+        }
+    </script>
+</body>
+</html>
